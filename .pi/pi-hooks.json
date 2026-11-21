@@ -1,0 +1,12 @@
+{
+  "agent_before_settle": {
+    "checks": [
+      {
+        "name": "SwiftLint",
+        "type": "command",
+        "command": "swiftlint lint --strict",
+        "inputs": ["**/*.swift", ".swiftlint.yml", ".pi/pi-hooks.json", ".pi/settings.json"]
+      }
+    ]
+  }
+}

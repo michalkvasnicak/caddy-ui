@@ -1,0 +1,9 @@
+included:
+  - Package.swift
+  - Sources
+identifier_name:
+  excluded:
+    - id
+line_length:
+  warning: 130
+  error: 150
