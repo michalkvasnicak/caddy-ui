@@ -36,6 +36,7 @@ struct MenuContent: View {
         }
 
         Divider()
+        LoginItemMenu(model: model)
         Button("Quit Caddy UI") { NSApp.terminate(nil) }
             .keyboardShortcut("q")
     }

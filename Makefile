@@ -1,7 +1,7 @@
 APP := .build/CaddyUI.app
 CONFIGURATION ?= debug
 
-.PHONY: app run
+.PHONY: app run install
 app:
 	swift build -c $(CONFIGURATION)
 	mkdir -p "$(APP)/Contents/MacOS" "$(APP)/Contents/Resources"
@@ -12,3 +12,6 @@ app:
 
 run: app
 	open "$(APP)"
+
+install: app
+	ditto "$(APP)" "/Applications/CaddyUI.app"

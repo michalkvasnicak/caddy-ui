@@ -19,6 +19,12 @@ After starting Caddy, import `~/Library/Application Support/CaddyUI/tls/pki/auth
 
 Edits are saved immediately and loaded into the running instance. If a reload fails, the saved changes are kept; retry from the targets window or restart Caddy. Quitting the app requests shutdown of its Caddy process. Targets and Caddy logs live in `~/Library/Application Support/CaddyUI/`.
 
+## Launch at login
+
+Quit Caddy UI if it’s running, then run `make install` to build and copy it to `/Applications/CaddyUI.app`. Open that copy and choose **Launch at Login** from the menu bar. If macOS asks for approval, open **System Settings → General → Login Items & Extensions** to enable it. To turn it off, choose **Disable Launch at Login** from the menu bar.
+
+This opens Caddy UI after you sign in; it does not start the Caddy server automatically.
+
 ## CLI: register a route and print a port
 
 Keep Caddy UI open and start Caddy from the menu bar. To make the CLI available on your PATH, symlink the executable after building:
