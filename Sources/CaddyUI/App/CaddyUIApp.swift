@@ -69,6 +69,17 @@ struct CaddyUIApp: App {
 
         Window("Caddy Targets", id: "targets") {
             TargetsView(model: delegate.model)
+                .onAppear {
+                    NSApp.setActivationPolicy(.regular)
+                    if let iconURL = Bundle.main.url(forResource: "AppIcon", withExtension: "icns"),
+                       let icon = NSImage(contentsOf: iconURL) {
+                        NSApp.applicationIconImage = icon
+                    }
+                    NSApp.activate()
+                }
+                .onDisappear {
+                    NSApp.setActivationPolicy(.accessory)
+                }
         }
         .defaultSize(width: 570, height: 360)
     }

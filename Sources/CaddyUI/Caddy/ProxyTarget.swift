@@ -1,6 +1,8 @@
 import Foundation
 
 struct ProxyTarget: Codable, Identifiable {
+    static let localSuffix = ".localhost"
+
     var id: String { host }
     let host: String
     let upstream: String
@@ -8,7 +10,7 @@ struct ProxyTarget: Codable, Identifiable {
     init(host: String, upstream: String) throws {
         let host = host.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         let upstream = upstream.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard Self.isHostname(host), host == "localhost" || host.hasSuffix(".localhost") else {
+        guard Self.isHostname(host), host == "localhost" || host.hasSuffix(Self.localSuffix) else {
             throw AppError("Use localhost or a hostname ending in .localhost.")
         }
 

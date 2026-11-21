@@ -17,7 +17,7 @@ struct TargetsView: View {
             List(selection: $selectedHost) {
                 ForEach(model.targets) { target in
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(target.host).font(.headline)
+                        Text(CaddyConfiguration.address(for: target.host)).font(.headline)
                         Text(target.upstream).foregroundStyle(.secondary)
                     }
                     .padding(.vertical, 4)
@@ -34,7 +34,7 @@ struct TargetsView: View {
             Divider()
 
             VStack(alignment: .leading, spacing: 8) {
-                Text("Caddy: \(model.status.rawValue) · http://<hostname>:\(CaddyConfiguration.port)")
+                Text("Caddy: \(model.status.rawValue) · HTTPS on port \(String(CaddyConfiguration.port))")
                     .foregroundStyle(.secondary)
                 if let notice = model.notice {
                     Text(notice)

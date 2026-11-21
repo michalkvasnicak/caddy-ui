@@ -3,12 +3,21 @@ import SwiftUI
 struct TargetDraft: Identifiable {
     let id = UUID()
     let originalHost: String?
-    var host: String
+    var name: String
     var upstream: String
 
+    var domainSuffix: String {
+        // Preserve bare localhost when editing a target that already uses it.
+        originalHost == "localhost" && cleanName.lowercased() == "localhost" ? "" : ProxyTarget.localSuffix
+    }
+
+    var cleanName: String { name.trimmingCharacters(in: .whitespacesAndNewlines) }
+    var host: String { cleanName + domainSuffix }
+
     init(target: ProxyTarget? = nil) {
+        let host = target?.host ?? ""
         originalHost = target?.host
-        host = target?.host ?? ""
+        name = host.hasSuffix(ProxyTarget.localSuffix) ? String(host.dropLast(ProxyTarget.localSuffix.count)) : host
         upstream = target?.upstream ?? ""
     }
 }
@@ -29,7 +38,15 @@ struct TargetEditor: View {
                 .font(.headline)
 
             Form {
-                TextField("Hostname", text: $draft.host, prompt: Text("app.localhost"))
+                LabeledContent("Hostname") {
+                    HStack(spacing: 4) {
+                        TextField("Hostname", text: $draft.name, prompt: Text("app"))
+                            .labelsHidden()
+                        Text("\(draft.domainSuffix):\(String(CaddyConfiguration.port))")
+                            .foregroundStyle(.secondary)
+                            .fixedSize()
+                    }
+                }
                 TextField("Upstream", text: $draft.upstream, prompt: Text("127.0.0.1:3000"))
             }
             .disabled(saving)
@@ -45,7 +62,7 @@ struct TargetEditor: View {
                     .disabled(saving)
                 Button("Save", action: save)
                     .keyboardShortcut(.defaultAction)
-                    .disabled(saving || !model.canChange || draft.host.isEmpty || draft.upstream.isEmpty)
+                    .disabled(saving || !model.canChange || draft.cleanName.isEmpty || draft.upstream.isEmpty)
             }
         }
         .padding(20)

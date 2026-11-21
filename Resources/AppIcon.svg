@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="tile" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#176E76"/>
+      <stop offset="55%" stop-color="#124255"/>
+      <stop offset="100%" stop-color="#0C2338"/>
+    </linearGradient>
+    <linearGradient id="trace" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F1FFFD"/>
+      <stop offset="100%" stop-color="#77E8CE"/>
+    </linearGradient>
+    <pattern id="grid" width="56" height="56" patternUnits="userSpaceOnUse">
+      <circle cx="28" cy="28" r="2.5" fill="#AEF9EF" opacity=".18"/>
+    </pattern>
+  </defs>
+  <rect x="100" y="112" width="824" height="824" rx="186" fill="#081B2D" opacity=".32"/>
+  <rect x="100" y="96" width="824" height="824" rx="186" fill="url(#tile)"/>
+  <rect x="100" y="96" width="824" height="824" rx="186" fill="url(#grid)"/>
+  <rect x="104" y="100" width="816" height="816" rx="182" fill="none" stroke="#AEF9EF" stroke-opacity=".22" stroke-width="8"/>
+  <g fill="none" stroke="url(#trace)" stroke-width="44" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 337,508 H 478 C 566,508 555,354 648,354 H 687"/>
+    <path d="M 478,508 C 566,508 555,662 648,662 H 687"/>
+  </g>
+  <circle cx="310" cy="508" r="54" fill="#F1FFFD"/>
+  <circle cx="714" cy="354" r="49" fill="#9AF3DE"/>
+  <circle cx="714" cy="662" r="49" fill="#77E8CE"/>
+  <circle cx="310" cy="508" r="18" fill="#185968"/>
+  <circle cx="714" cy="354" r="16" fill="#185968"/>
+  <circle cx="714" cy="662" r="16" fill="#124255"/>
+</svg>
