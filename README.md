@@ -68,7 +68,3 @@ The stdio bridge talks to the running app over a Unix socket in its private data
 | `remove_target` | `host` |
 | `start_caddy` | None |
 | `stop_caddy` | None |
-
-## Pi setup
-
-Install SwiftLint with `brew install swiftlint`. Trust this repository in Pi and start a new Pi session (or use `/reload`) to load the pinned repository-local Pi Hooks package. The hook runs SwiftLint when Swift or hook configuration changes.
