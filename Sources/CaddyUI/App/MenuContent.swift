@@ -24,8 +24,11 @@ struct MenuContent: View {
         .disabled(!model.canChange)
 
         Button("Manage Targets…") {
-            openWindow(id: "targets")
-            NSApp.activate()
+            // Let the menu close before activating the app and opening the window.
+            DispatchQueue.main.async {
+                NSApp.activate()
+                openWindow(id: "targets")
+            }
         }
 
         if model.notice != nil || model.needsReload {
