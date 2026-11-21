@@ -19,6 +19,24 @@ After starting Caddy, import `~/Library/Application Support/CaddyUI/tls/pki/auth
 
 Edits are saved immediately and loaded into the running instance. If a reload fails, the saved changes are kept; retry from the targets window or restart Caddy. Quitting the app requests shutdown of its Caddy process. Targets and Caddy logs live in `~/Library/Application Support/CaddyUI/`.
 
+## CLI: register a route and print a port
+
+Keep Caddy UI open and start Caddy from the menu bar. To make the CLI available on your PATH, symlink the executable after building:
+
+```sh
+mkdir -p ~/.local/bin
+ln -s "$PWD/.build/CaddyUI.app/Contents/MacOS/CaddyUI" ~/.local/bin/caddy-ui
+```
+
+With `~/.local/bin` on your PATH, run this from a project directory:
+
+```sh
+port=$(caddy-ui serve) && npm run dev -- --port "$port"
+port=$(caddy-ui serve --name web) && npm --prefix apps/web run dev -- --port "$port"
+```
+
+Without `--name`, the CLI uses the current directory name, lowercased with unsupported characters replaced by hyphens. With `--name web`, the URL is `https://web.localhost:8443`. The command adds or updates the target, prints only the allocated port, and exits without starting a server. The target stays registered until you remove it. Run `caddy-ui help` for usage.
+
 ## Local MCP
 
 Keep the menu bar app open. In a client that supports stdio MCP servers, point it at the app executable using an absolute path:

@@ -6,9 +6,13 @@ import SwiftUI
 enum EntryPoint {
     @MainActor
     static func main() {
-        if CommandLine.arguments.dropFirst().first == "--mcp" {
+        let arguments = Array(CommandLine.arguments.dropFirst())
+        switch arguments.first {
+        case "--mcp":
             MCPBridge.run(directory: AppDelegate.dataDirectory)
-        } else {
+        case "serve", "help", "--help", "-h":
+            ServeCommand.run(arguments, directory: AppDelegate.dataDirectory)
+        default:
             CaddyUIApp.main()
         }
     }

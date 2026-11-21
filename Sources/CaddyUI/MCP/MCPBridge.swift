@@ -3,12 +3,11 @@ import Foundation
 
 enum MCPBridge {
     static func run(directory: URL) {
-        let path = directory.appendingPathComponent("mcp.sock").path
         while let line = readLine() {
             let request = Data(line.utf8)
             let response: Data
             do {
-                response = try exchange(request, path: path)
+                response = try exchange(request, directory: directory)
             } catch {
                 guard let fallback = unavailableResponse(for: request) else { continue }
                 response = fallback
@@ -20,7 +19,8 @@ enum MCPBridge {
         }
     }
 
-    private static func exchange(_ request: Data, path: String) throws -> Data {
+    static func exchange(_ request: Data, directory: URL) throws -> Data {
+        let path = directory.appendingPathComponent("mcp.sock").path
         guard request.count <= LocalSocket.maxMessageSize else {
             throw AppError("MCP message exceeds 1 MiB.")
         }
@@ -28,7 +28,7 @@ enum MCPBridge {
         defer { close(descriptor) }
         try LocalSocket.configureStream(descriptor)
         let connected = try LocalSocket.withAddress(path) { connect(descriptor, $0, $1) }
-        guard connected == 0 else { throw LocalSocket.failure("Connect to Caddy UI") }
+        guard connected == 0 else { throw LocalSocket.failure("Connect to Caddy UI (is the menu bar app open?)") }
         try LocalSocket.writeMessage(request, to: descriptor)
         guard shutdown(descriptor, Int32(SHUT_WR)) == 0 else { throw LocalSocket.failure("Finish request") }
         return try LocalSocket.readMessage(from: descriptor)

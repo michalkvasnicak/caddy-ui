@@ -78,6 +78,22 @@ final class AppModel {
         return (target.host, warning)
     }
 
+    func registerLocalUpstream(host: String) async throws -> UInt16 {
+        try requireAvailable()
+        let port = try LoopbackPort.available()
+        let target = try ProxyTarget(host: host, upstream: "127.0.0.1:\(port)")
+        let saved = try await save(
+            host: target.host,
+            upstream: target.upstream,
+            replacing: targets.first { $0.host == target.host }?.host
+        )
+        if let warning = saved.warning {
+            notice = warning
+            throw AppError(warning)
+        }
+        return port
+    }
+
     func remove(host: String) async throws -> String? {
         try requireAvailable()
         guard targets.contains(where: { $0.host == host }) else {
