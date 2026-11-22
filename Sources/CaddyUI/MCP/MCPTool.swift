@@ -65,7 +65,11 @@ enum MCPTool: String, CaseIterable {
             )
             let encoder = JSONEncoder()
             encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-            return String(decoding: try encoder.encode(snapshot), as: UTF8.self)
+            let data = try encoder.encode(snapshot)
+            guard let json = String(bytes: data, encoding: .utf8) else {
+                throw AppError("Could not encode the target list as UTF-8.")
+            }
+            return json
         case .add:
             let saved = try await model.save(host: value("host"), upstream: value("upstream"))
             return saved.warning ?? "Target added."

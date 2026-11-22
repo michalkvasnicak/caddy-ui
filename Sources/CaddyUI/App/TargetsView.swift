@@ -16,9 +16,14 @@ struct TargetsView: View {
         VStack(alignment: .leading, spacing: 0) {
             List(selection: $selectedHost) {
                 ForEach(model.targets) { target in
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(CaddyConfiguration.address(for: target.host)).font(.headline)
-                        Text(target.upstream).foregroundStyle(.secondary)
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(CaddyConfiguration.address(for: target.host)).font(.headline)
+                            Text(target.upstream).foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        UpstreamIndicator(upstream: target.upstream)
+                            .id(target.upstream)
                     }
                     .padding(.vertical, 4)
                     .tag(target.host)

@@ -58,15 +58,15 @@ enum ServeCommand {
     }
 
     private struct Reply: Decodable {
-        struct Result: Decodable {
-            let port: UInt16
-        }
+        let result: ReplyResult?
+        let error: ReplyFailure?
+    }
 
-        struct Failure: Decodable {
-            let message: String
-        }
+    private struct ReplyResult: Decodable {
+        let port: UInt16
+    }
 
-        let result: Result?
-        let error: Failure?
+    private struct ReplyFailure: Decodable {
+        let message: String
     }
 }

@@ -29,31 +29,41 @@ enum MCPServer {
                 "serverInfo": ["name": "caddy-ui", "version": "0.1.0"]
             ])
         case "caddy-ui/serve":
-            guard let host = params["host"] as? String else {
-                return Self.error(id: id, code: -32602, message: "Provide a hostname.")
-            }
-            do {
-                let port = try await model.registerLocalUpstream(host: host)
-                return result(id: id, value: ["port": port])
-            } catch {
-                return Self.error(id: id, code: -32000, message: error.localizedDescription)
-            }
+            return await registerUpstream(id: id, params: params, model: model)
         case "ping":
             return result(id: id, value: [:])
         case "tools/list":
             return result(id: id, value: ["tools": MCPTool.allCases.map(\.definition)])
         case "tools/call":
-            guard let name = params["name"] as? String, let tool = MCPTool(rawValue: name) else {
-                return Self.error(id: id, code: -32602, message: "Unknown or missing tool name.")
-            }
-            do {
-                let output = try await tool.call(params["arguments"] as? [String: Any] ?? [:], model: model)
-                return toolResult(id: id, text: output, failed: false)
-            } catch {
-                return toolResult(id: id, text: error.localizedDescription, failed: true)
-            }
+            return await callTool(id: id, params: params, model: model)
         default:
             return Self.error(id: id, code: -32601, message: "Method not found.")
+        }
+    }
+
+    @MainActor
+    private static func registerUpstream(id: Any, params: [String: Any], model: AppModel) async -> Data {
+        guard let host = params["host"] as? String else {
+            return Self.error(id: id, code: -32602, message: "Provide a hostname.")
+        }
+        do {
+            let port = try await model.registerLocalUpstream(host: host)
+            return result(id: id, value: ["port": port])
+        } catch {
+            return Self.error(id: id, code: -32000, message: error.localizedDescription)
+        }
+    }
+
+    @MainActor
+    private static func callTool(id: Any, params: [String: Any], model: AppModel) async -> Data {
+        guard let name = params["name"] as? String, let tool = MCPTool(rawValue: name) else {
+            return Self.error(id: id, code: -32602, message: "Unknown or missing tool name.")
+        }
+        do {
+            let output = try await tool.call(params["arguments"] as? [String: Any] ?? [:], model: model)
+            return toolResult(id: id, text: output, failed: false)
+        } catch {
+            return toolResult(id: id, text: error.localizedDescription, failed: true)
         }
     }
 
