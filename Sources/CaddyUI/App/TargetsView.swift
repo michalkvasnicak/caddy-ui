@@ -14,6 +14,9 @@ struct TargetsView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
+            targetActions
+            Divider()
+
             List(selection: $selectedHost) {
                 ForEach(model.targets) { target in
                     HStack {
@@ -55,7 +58,21 @@ struct TargetsView: View {
             .padding()
         }
         .frame(minWidth: 450, minHeight: 260)
-        .toolbar {
+        .sheet(item: $editor) { draft in
+            TargetEditor(model: model, draft: draft) { host in
+                selectedHost = host
+            }
+        }
+        .alert("Remove Target?", isPresented: showingRemoval, presenting: targetToRemove) { target in
+            Button("Remove", role: .destructive) { remove(target) }
+            Button("Cancel", role: .cancel) {}
+        } message: { target in
+            Text("Remove the reverse proxy for \(target.host)?")
+        }
+    }
+
+    private var targetActions: some View {
+        HStack {
             Button {
                 editor = TargetDraft()
             } label: {
@@ -77,17 +94,7 @@ struct TargetsView: View {
             }
             .disabled(selection == nil || !model.canChange)
         }
-        .sheet(item: $editor) { draft in
-            TargetEditor(model: model, draft: draft) { host in
-                selectedHost = host
-            }
-        }
-        .alert("Remove Target?", isPresented: showingRemoval, presenting: targetToRemove) { target in
-            Button("Remove", role: .destructive) { remove(target) }
-            Button("Cancel", role: .cancel) {}
-        } message: { target in
-            Text("Remove the reverse proxy for \(target.host)?")
-        }
+        .padding(8)
     }
 
     private var showingRemoval: Binding<Bool> {

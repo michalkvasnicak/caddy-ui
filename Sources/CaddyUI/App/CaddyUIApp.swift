@@ -26,9 +26,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     let model = AppModel(directory: AppDelegate.dataDirectory)
+    private lazy var targetsWindow = TargetsWindow(model: model)
     private var listener: MCPListener?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        NSApp.setActivationPolicy(.accessory)
         do {
             try prepareDirectory()
             listener = try MCPListener(directory: model.directory) { [model] request in
@@ -38,6 +40,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         } catch {
             model.notice = error.localizedDescription
         }
+    }
+
+    func showTargets() {
+        targetsWindow.show()
     }
 
     func applicationWillTerminate(_ notification: Notification) {
@@ -68,23 +74,7 @@ struct CaddyUIApp: App {
 
     var body: some Scene {
         MenuBarExtra("Caddy UI", systemImage: "server.rack") {
-            MenuContent(model: delegate.model)
+            MenuContent(model: delegate.model, showTargets: delegate.showTargets)
         }
-
-        Window("Caddy Targets", id: "targets") {
-            TargetsView(model: delegate.model)
-                .onAppear {
-                    NSApp.setActivationPolicy(.regular)
-                    if let iconURL = Bundle.main.url(forResource: "AppIcon", withExtension: "icns"),
-                       let icon = NSImage(contentsOf: iconURL) {
-                        NSApp.applicationIconImage = icon
-                    }
-                    NSApp.activate()
-                }
-                .onDisappear {
-                    NSApp.setActivationPolicy(.accessory)
-                }
-        }
-        .defaultSize(width: 570, height: 360)
     }
 }

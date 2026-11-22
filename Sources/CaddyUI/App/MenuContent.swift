@@ -4,7 +4,7 @@ import SwiftUI
 @MainActor
 struct MenuContent: View {
     let model: AppModel
-    @Environment(\.openWindow) private var openWindow
+    let showTargets: () -> Void
 
     var body: some View {
         Text("Caddy: \(model.status.rawValue)")
@@ -26,8 +26,7 @@ struct MenuContent: View {
         Button("Manage Targets…") {
             // Let the menu close before activating the app and opening the window.
             DispatchQueue.main.async {
-                NSApp.activate()
-                openWindow(id: "targets")
+                showTargets()
             }
         }
 
